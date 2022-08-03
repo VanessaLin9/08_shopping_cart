@@ -4,6 +4,7 @@ import { PRODUCTS } from './config';
 import Cart from './Cart';
 import Coupons from './Coupons';
 import type { LineItem } from './types';
+import { CartContext } from './CartContext';
 
 const ShoppingCart = () => {
   // TODO 2
@@ -78,36 +79,39 @@ const ShoppingCart = () => {
   }, []);
   */
 
+  const provideValue = { totalAmount, lineItems };
   return (
-    <div className="container">
-      <div className="row">
-        {/* TODO 4 */}
-        {PRODUCTS.map((product) => {
-          return (
-            <div className="col-3" key={product.id}>
-              <ProductItem
-                id={product.id}
-                img={product.img}
-                title={product.title}
-                price={product.price}
-                inventory={product.inventory}
-                // TODO 5
-                onAddToCart={atAddToCart}
-              />
-            </div>
-          );
-        })}
+    <CartContext.Provider value={provideValue}>
+      <div className="container">
+        <div className="row">
+          {/* TODO 4 */}
+          {PRODUCTS.map((product) => {
+            return (
+              <div className="col-3" key={product.id}>
+                <ProductItem
+                  id={product.id}
+                  img={product.img}
+                  title={product.title}
+                  price={product.price}
+                  inventory={product.inventory}
+                  // TODO 5
+                  onAddToCart={atAddToCart}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <Cart
+          // totalAmount={totalAmount}
+          // lineItems={lineItems}
+          onRemoveCart={onRemoveCart}
+          onUpdateQuantity={atUpdateQuantity}
+          onRemoveItem={onRemoveItem}
+        />
+        {/* FIXME 請實作 coupon 功能 */}
+        {/* <Coupons onApplyCoupon={atApplyCoupon} />} */}
       </div>
-      <Cart
-        totalAmount={totalAmount}
-        lineItems={lineItems}
-        onRemoveCart={onRemoveCart}
-        onUpdateQuantity={atUpdateQuantity}
-        onRemoveItem={onRemoveItem}
-      />
-      {/* FIXME 請實作 coupon 功能 */}
-      {/* <Coupons onApplyCoupon={atApplyCoupon} />} */}
-    </div>
+    </CartContext.Provider>
   );
 };
 
