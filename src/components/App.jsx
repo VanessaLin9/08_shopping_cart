@@ -3,7 +3,7 @@ import ProductItem from './ProductItem';
 import { PRODUCTS } from './config';
 import Cart from './Cart';
 import Coupons from './Coupons';
-import type { LineItem, Product } from './types';
+import type { LineItem, Product, Coupon } from './types';
 import { CartContext } from './CartContext';
 
 const ShoppingCart = () => {
@@ -14,6 +14,7 @@ const ShoppingCart = () => {
    */
   const [lineItems, setLineItems] = React.useState([]);
   const [Products, setProducts] = React.useState(PRODUCTS);
+  const [coupons, setCoupon] = React.useState(0);
 
   // TODO 6
   React.useEffect(() => {
@@ -123,13 +124,13 @@ const ShoppingCart = () => {
   }, []);
 
   // FIXME 請實作 coupon
-  /*
-  const atApplyCoupon = useCallback((coupon) => {
-    console.log('coupon', coupon);
-  }, []);
-  */
 
-  const provideValue = { totalAmount, lineItems };
+  const atApplyCoupon = useCallback((coupon: Coupon) => {
+    console.log('coupon', coupon);
+    setCoupon(coupon.discount);
+  }, []);
+
+  const provideValue = { totalAmount, lineItems, coupons };
   return (
     <CartContext.Provider value={provideValue}>
       <div className="container">
@@ -159,7 +160,7 @@ const ShoppingCart = () => {
           onRemoveItem={onRemoveItem}
         />
         {/* FIXME 請實作 coupon 功能 */}
-        {/* <Coupons onApplyCoupon={atApplyCoupon} />} */}
+        <Coupons onApplyCoupon={atApplyCoupon} />}
       </div>
     </CartContext.Provider>
   );

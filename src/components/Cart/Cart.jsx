@@ -15,8 +15,12 @@ type CartProps = {
 
 const Cart: React.FC<CartProps> = (props) => {
   const { onUpdateQuantity, onRemoveItem, onRemoveCart } = props;
-  const { totalAmount, lineItems } = useCartContext();
-
+  const { totalAmount, lineItems, coupons } = useCartContext();
+  // 設定 coupons
+  let discount = '未使用';
+  if (coupons !== 0) {
+    discount = -coupons;
+  }
   return (
     <section data-name="Cart">
       <h2>購物車</h2>
@@ -40,7 +44,8 @@ const Cart: React.FC<CartProps> = (props) => {
           />
         );
       })}
-      <div className="text-end">totalAmount:{totalAmount}</div>
+      <div className="text-end">coupon:{discount}</div>
+      <div className="text-end">totalAmount:{totalAmount - coupons}</div>
       <button
         disabled={totalAmount === 0}
         className="btn btn-success"
