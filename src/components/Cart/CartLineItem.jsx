@@ -30,12 +30,27 @@ const BuildItem: React.FC<BuildItemProps> = (props) => {
   if (inventory === 0) {
     soldOut = true;
   }
+  // TODO 減少||移除判斷
+  const reduceBtn = <button onClick={() => onUpdateQuantity(id, quantity - 1)}>-</button>;
+  const removeBtn = (
+    <button
+      onClick={() => {
+        onRemoveItem(id);
+      }}
+    >
+      -
+    </button>
+  );
+  let minusBtn = reduceBtn;
+  if (quantity === 1) {
+    minusBtn = removeBtn;
+  }
   return (
     <section className="row" data-name="CartLineItem" data-gradient>
       <div className="col-2">{title}</div>
       <div className="col-3">
         {/* FIXME：這裡有 bug，怎麼修好他呢? */}
-        <button onClick={() => onUpdateQuantity(id, quantity - 1)}>-</button>
+        {minusBtn}
         <span className="px-1">{quantity}</span>
         <button disabled={soldOut} onClick={() => onUpdateQuantity(id, quantity + 1)}>
           +
