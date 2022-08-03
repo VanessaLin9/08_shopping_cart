@@ -5,6 +5,7 @@ type BuildItemProps = {
   id: string,
   title: string,
   quantity: number,
+  inventory: number,
   price: number,
   onRemoveItem: (id: string) => void,
   onUpdateQuantity: (id: string) => void,
@@ -17,12 +18,18 @@ const BuildItem: React.FC<BuildItemProps> = (props) => {
     quantity,
     price,
     id,
+    inventory,
     onRemoveItem,
     onUpdateQuantity,
   } = props;
 
   // 小計
   const lineItemPrice = price * quantity;
+  // TODO 完售判斷
+  let soldOut = false;
+  if (inventory === 0) {
+    soldOut = true;
+  }
   return (
     <section className="row" data-name="CartLineItem" data-gradient>
       <div className="col-2">{title}</div>
@@ -30,7 +37,9 @@ const BuildItem: React.FC<BuildItemProps> = (props) => {
         {/* FIXME：這裡有 bug，怎麼修好他呢? */}
         <button onClick={() => onUpdateQuantity(id, quantity - 1)}>-</button>
         <span className="px-1">{quantity}</span>
-        <button onClick={() => onUpdateQuantity(id, quantity + 1)}>+</button>
+        <button disabled={soldOut} onClick={() => onUpdateQuantity(id, quantity + 1)}>
+          +
+        </button>
       </div>
 
       <div className="col-2">{price}</div>

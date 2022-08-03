@@ -3,7 +3,7 @@ import ProductItem from './ProductItem';
 import { PRODUCTS } from './config';
 import Cart from './Cart';
 import Coupons from './Coupons';
-import type { LineItem } from './types';
+import type { LineItem, Product } from './types';
 import { CartContext } from './CartContext';
 
 const ShoppingCart = () => {
@@ -13,6 +13,7 @@ const ShoppingCart = () => {
    * @type {[LineItem[], Function]}
    */
   const [lineItems, setLineItems] = React.useState([]);
+  const [Products, setProducts] = React.useState(PRODUCTS);
 
   // TODO 6
   React.useEffect(() => {
@@ -33,6 +34,22 @@ const ShoppingCart = () => {
             title: item.title,
             price: item.price,
             quantity: item.quantity + 1,
+            inventory: item.inventory - 1,
+          };
+        }
+        return item;
+      });
+    });
+    // 減少庫存
+    setProducts((pre) => {
+      return pre.map((item: Product) => {
+        if (item.id === id) {
+          return {
+            id: item.id,
+            img: item.img,
+            title: item.title,
+            price: item.price,
+            inventory: item.inventory - 1,
           };
         }
         return item;
@@ -48,15 +65,30 @@ const ShoppingCart = () => {
         atUpdateQuantity(id);
       } else {
         // 新增
-        const foundProduct = PRODUCTS.find((data) => data.id === id);
+        const foundProduct = Products.find((data) => data.id === id);
 
         const lineItem = {
           id,
           price: foundProduct.price,
           title: foundProduct.title,
           quantity: 1,
+          inventory: foundProduct.inventory - 1,
         };
         setLineItems((prev) => prev.concat(lineItem));
+        setProducts((pre) => {
+          return pre.map((item: Product) => {
+            if (item.id === id) {
+              return {
+                id: item.id,
+                img: item.img,
+                title: item.title,
+                price: item.price,
+                inventory: item.inventory - 1,
+              };
+            }
+            return item;
+          });
+        });
       }
     },
     [atUpdateQuantity, lineItems],
@@ -85,7 +117,7 @@ const ShoppingCart = () => {
       <div className="container">
         <div className="row">
           {/* TODO 4 */}
-          {PRODUCTS.map((product) => {
+          {Products.map((product) => {
             return (
               <div className="col-3" key={product.id}>
                 <ProductItem

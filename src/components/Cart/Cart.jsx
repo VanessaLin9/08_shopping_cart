@@ -34,6 +34,7 @@ const Cart: React.FC<CartProps> = (props) => {
             title={data.title}
             price={data.price}
             quantity={data.quantity}
+            inventory={data.inventory}
             onUpdateQuantity={onUpdateQuantity}
             onRemoveItem={onRemoveItem}
           />
