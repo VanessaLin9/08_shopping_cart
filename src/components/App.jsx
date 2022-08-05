@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import ProductItem from './ProductItem';
-import { PRODUCTS } from './config';
+import { PRODUCTS, coupons } from './config';
 import Cart from './Cart';
 import Coupons from './Coupons';
 import type { LineItem, Product, Coupon } from './types';
@@ -14,7 +14,7 @@ const ShoppingCart = () => {
    */
   const [lineItems, setLineItems] = React.useState([]);
   const [Products, setProducts] = React.useState(PRODUCTS);
-  const [coupons, setCoupon] = React.useState(0);
+  const [discount, setDiscount] = React.useState();
 
   // TODO 6
   React.useEffect(() => {
@@ -36,8 +36,8 @@ const ShoppingCart = () => {
             id: item.id,
             title: item.title,
             price: item.price,
-            quantity: newQuantity,
-            inventory: item.inventory - changeNumber,
+            quantity: newQuantity || item.quantity + 1,
+            inventory: newQuantity ? item.inventory - changeNumber : item.inventory - 1,
           };
         }
         return item;
@@ -52,7 +52,7 @@ const ShoppingCart = () => {
             img: item.img,
             title: item.title,
             price: item.price,
-            inventory: item.inventory - changeNumber,
+            inventory: newQuantity ? item.inventory - changeNumber : item.inventory - 1,
           };
         }
         return item;
@@ -121,16 +121,22 @@ const ShoppingCart = () => {
   const onRemoveCart = useCallback(() => {
     setLineItems([]);
     setProducts(PRODUCTS);
+    setDiscount();
   }, []);
 
   // FIXME 請實作 coupon
 
-  const atApplyCoupon = useCallback((coupon: Coupon) => {
-    console.log('coupon', coupon);
-    setCoupon(coupon.discount);
-  }, []);
+  const atApplyCoupon = useCallback(
+    (coupon: Coupon) => {
+      if (!discount || discount.id !== coupon.id) {
+        return setDiscount(coupon);
+      }
+      setDiscount();
+    },
+    [discount],
+  );
 
-  const provideValue = { totalAmount, lineItems, coupons };
+  const provideValue = { totalAmount, lineItems, discount };
   return (
     <CartContext.Provider value={provideValue}>
       <div className="container">
@@ -160,10 +166,9 @@ const ShoppingCart = () => {
           onRemoveItem={onRemoveItem}
         />
         {/* FIXME 請實作 coupon 功能 */}
-        <Coupons onApplyCoupon={atApplyCoupon} />}
+        <Coupons onApplyCoupon={atApplyCoupon} />
       </div>
     </CartContext.Provider>
   );
 };
-
 export default ShoppingCart;

@@ -15,12 +15,20 @@ type CartProps = {
 
 const Cart: React.FC<CartProps> = (props) => {
   const { onUpdateQuantity, onRemoveItem, onRemoveCart } = props;
-  const { totalAmount, lineItems, coupons } = useCartContext();
-  // 設定 coupons
-  let discount = '未使用';
-  if (coupons !== 0) {
-    discount = -coupons;
+  const { totalAmount, lineItems, discount } = useCartContext();
+  // 購物車顯示金額與 coupons 設定
+  let showDiscount = '未使用';
+  let showTotalAmount = 0;
+  if (totalAmount !== 0) {
+    showTotalAmount = totalAmount;
+    if (discount) {
+      showDiscount = -discount.discount;
+      showTotalAmount = totalAmount - discount.discount;
+    }
+  } else if (discount) {
+    showDiscount = '未有符合套用折價券的商品';
   }
+
   return (
     <section data-name="Cart">
       <h2>購物車</h2>
@@ -44,8 +52,8 @@ const Cart: React.FC<CartProps> = (props) => {
           />
         );
       })}
-      <div className="text-end">coupon:{discount}</div>
-      <div className="text-end">totalAmount:{totalAmount - coupons}</div>
+      <div className="text-end">coupon:{showDiscount}</div>
+      <div className="text-end">totalAmount:{showTotalAmount}</div>
       <button
         disabled={totalAmount === 0}
         className="btn btn-success"
