@@ -21,11 +21,11 @@ const Cart: React.FC<CartProps> = (props) => {
   let showTotalAmount = 0;
   if (totalAmount !== 0) {
     showTotalAmount = totalAmount;
-    if (discount) {
+    if (discount !== 'unUsed') {
       showDiscount = -discount.discount;
       showTotalAmount = totalAmount - discount.discount;
     }
-  } else if (discount) {
+  } else if (discount !== 'unUsed') {
     showDiscount = '未有符合套用折價券的商品';
   }
 

@@ -14,7 +14,7 @@ const ShoppingCart = () => {
    */
   const [lineItems, setLineItems] = React.useState([]);
   const [Products, setProducts] = React.useState(PRODUCTS);
-  const [discount, setDiscount] = React.useState();
+  const [discount, setDiscount] = React.useState('unUsed');
 
   // TODO 6
   React.useEffect(() => {
@@ -121,7 +121,7 @@ const ShoppingCart = () => {
   const onRemoveCart = useCallback(() => {
     setLineItems([]);
     setProducts(PRODUCTS);
-    setDiscount();
+    setDiscount('unUsed');
   }, []);
 
   // FIXME 請實作 coupon
@@ -131,7 +131,7 @@ const ShoppingCart = () => {
       if (!discount || discount.id !== coupon.id) {
         return setDiscount(coupon);
       }
-      setDiscount();
+      setDiscount('unUsed');
     },
     [discount],
   );
